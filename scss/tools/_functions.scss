@@ -1,0 +1,18 @@
+// --- FUNCTIONS --- //
+
+@function rem($fs){
+  @return ($fs / 16) + rem;
+}
+
+@mixin font($family, $size: 'inherit') {
+  font-family: $family;
+  font-size: $size;
+}
+
+@function leading($fs, $leading){
+  @return ($leading / $fs);
+}
+
+@function letterTracking($lt){
+  @return ($lt / 1000) + em;
+}
