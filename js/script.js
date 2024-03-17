@@ -2,52 +2,85 @@ document.addEventListener('DOMContentLoaded', function () {
 
 cycleDesQuintes = getCycleDesQuintes();
 
+// Ajuster la visibilité des éléments liés au jeu
+$("#boutonJouer").show();
+$("#boutonValidation").hide();
+$("#jeuContenu").hide();
+
+//$("#message").append("Répondez à " + nbQuestions + " questions et prouvez que vous être le maître des quintes!")
+
 });
 
 
 // VARIABLES GLOBALES -----------------------------
 
 
+// Cycle des quintes
 let cycleDesQuintes = null;
+
+// Propriétés du questionnaire en général
+const nbReponses = 4; // Nombre de choix de réponse donné à chaque question
+const nbQuestions = 10; // Nombre de questions à poser
+const tempsPause = 3; // Temps de pause entre chaque question (en secondes)
+const tempsMax = 10; // Temps maximum pour répondre à une question (en secondes)
+
+// Propriétés de la partie actuelle
 let timer = null;
 let score = 0; // Score du joueur
-
-// Propriétés du questionnaire
-const nbReponses = 4; // Nombre de choix de réponse donné à chaque question
-const nbQuestions = 10 // Nombre de questions à poser
-const tempsPause = 3; // Temps de pause entre chaque question (en secondes)
-const tempsMax = 10 // Temps maximum pour répondre à une question (en secondes)
 let questionCourante = null; // Question en cours
+let totalQuestions = 0; // Nombre de questions générées jusqu'à présent
 
 
 // MÉTHODES DE JEU -----------------------------
 
 
-// Commencer une nouvelle série de questions
-function playJeu() {
+// Commencer une nouvelle série de questions.
+function startJeu() {
+    // Mettre à jour la visibilité des boutons et des éléments de jeu
+    toggleBoutons();
+    toggleJeu();
+
+    // Réinitialiser les propriétés du jeu
+    $("#message").empty();
+    totalQuestions = 0;
     resetScore();
     loadProchaineQuestion();
 }
 
-// Valider la réponse sélectionnée par le joueur
+// Commencer une nouvelle série de questions.
+function endJeu() {
+    let pointTexte = "points";
+
+    if (score < 2) {
+        pointTexte = "point";
+    }
+
+    $("#message").empty().append("La partie est terminée! Vous avez obtenu un score de " + score
+        + " " + pointTexte + "!");
+    toggleJeu();
+    toggleBoutons();
+}
+
+// Valider la réponse sélectionnée par le joueur.
 function validReponse() {
 
-    // Ne rien faire s'il n'y a pas de question à valider
+    // Ne rien faire s'il n'y a pas de question à valider.
     if (!(questionCourante instanceof Question)) {
         return null;
     }
 
-    $("#boutonValidation").attr('disabled', true);
-
     let reponse = questionCourante.reponse;
     let choix = $('[name="questionnaire"]:checked + label');
+
+    // Désactiver le bouton de validation jusqu'à ce que la prochaine question soit générée.
+    $("#boutonValidation").attr('disabled', true);
 
     // Vérifier si la réponse est bonne
     if (String(reponse) === choix.text()) {
         $("#solution").append("C'est bien ça! Bravo!");
         modifyScore(1);
     } else {
-        $("#solution").append("Désolé! La bonne réponse était " + reponse + "!");
+        $("#solution").append("Désolé! La réponse attendu était " + reponse + "!");
     }
 
     stopTimer();
@@ -56,6 +89,13 @@ function validReponse() {
 
 // Générer une nouvelle question et mettre à jour le HTML en conséquence.
 function loadProchaineQuestion() {
+    // Terminer la partie si le nombre de questions à générer a été dépassé.
+    totalQuestions++;
+    if (totalQuestions > nbQuestions) {
+        endJeu();
+        return null;
+    }
+
     // Générer une nouvelle question. Recommencer si la question reçue n'est pas valide.
     let question = null;
     while (question === null) {
@@ -66,36 +106,48 @@ function loadProchaineQuestion() {
     console.log(questionCourante); // TODO: Remove
 
     // Mettre à jour le HTML pour inclure toutes les informations nécessaires pour pouvoir répondre à la question
-    $("#question").empty().append(questionCourante.question);
+    $("#question").empty().append("Question " + totalQuestions + ": " + questionCourante.question);
     $("#solution").empty();
 
     let questionnaire = $("#questionnaire");
     questionnaire.empty();
     for (let i = 0; i < questionCourante.choixReponse.length; i++) {
         let reponseID = "reponse" + i;
-        questionnaire.append("<input type=\"radio\" name=\"questionnaire\" id=\"" + reponseID + "\"><label for=\""
-            + reponseID + "\">" + questionCourante.choixReponse[i] + "</label>");
+        questionnaire.append("<div class=\"m-auto\"><input class=\"me-2\" type=\"radio\" name=\"questionnaire\" id=\"" + reponseID + "\"><label for=\""
+            + reponseID + "\">" + questionCourante.choixReponse[i] + "</label></div>");
     }
 
+    // Réactiver le bouton de validation pour la prochaine question
     $("#boutonValidation").attr('disabled', false);
 
     stopTimer();
     startTimer(tempsMax);
 }
 
-// Modifier le score en y ajoutant la valeur int
+// Toggle la visibilité des boutons de jeu et de vérification
+function toggleBoutons() {
+    $("#boutonJouer").toggle();
+    $("#boutonValidation").toggle();
+}
+
+// Toggle la visibilité du jeu
+function toggleJeu() {
+    $("#jeuContenu").toggle();
+}
+
+// Modifier le score en y ajoutant la valeur int.
 function modifyScore(int) {
     score = score + int;
     $("#score").empty().append(score + "/" + nbQuestions);
 }
 
-// Remettre le score à 0
+// Remettre le score à 0.
 function resetScore() {
     score = 0;
     $("#score").empty().append(score + "/" + nbQuestions);
 }
 
-// Commencer le timer à partir de la valeur time (en secondes)
+// Commencer le timer à partir de la valeur time (en secondes.)
 function startTimer(time) {
     $("#timer").empty().append(time);
 
@@ -104,9 +156,7 @@ function startTimer(time) {
         $("#timer").empty().append(time);
 
         if(time === 0) {
-            $("#solution").append("Vous avez manquer de temps! La bonne réponse était " + questionCourante.reponse + "!");
-            stopTimer();
-            setTimeout(loadProchaineQuestion, tempsPause*1000);
+            validReponse();
         }
     }, 1000);
 }
@@ -125,12 +175,24 @@ function genQuestionNbAlterations() {
     let index = getRandomInt(cycleDesQuintes.length);
     let quinte = cycleDesQuintes[index];
 
+    let alteration = getNomAlteration(quinte.alteration(), true);
+
+    // Demander une altération au hasard si la quinte choisie n'en a pas.
     if (quinte.nbAlterations() === 0) {
-        return null; // TODO: Write a generic question instead
+        switch(getRandomInt(2)) {
+            case 0:
+                alteration = getNomAlteration("♭", true);
+                break;
+            case 1:
+                alteration = getNomAlteration("♯", true);
+                break;
+            default:
+                return null;
+        }
     }
 
     // Assembler la question: "Combien de (dièses/bémols) y a t-il dans la gamme de (nom de gamme)?"
-    let question = "Combien de " + getNomAlteration(quinte.alteration(), true) +
+    let question = "Combien de " + alteration +
         " y a t-il dans la gamme de " + quinte.getRandomMode() + "?";
     let reponse = quinte.nbAlterations();
 
