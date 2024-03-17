@@ -9,13 +9,19 @@ cycleDesQuintes = getCycleDesQuintes();
 
 
 let cycleDesQuintes = null;
-let timer = 0; // Valeur du timer en seconde
+let timer = null;
 let score = 0; // Score du joueur
-const maxChoixReponse = 4; // Nombre de choix de réponse donné à chaque question
+
+// Propriétés du questionnaire
+const nbReponses = 4; // Nombre de choix de réponse donné à chaque question
+const nbQuestions = 10 // Nombre de questions à poser
+const tempsPause = 3; // Temps de pause entre chaque question (en secondes)
+const tempsMax = 10 // Temps maximum pour répondre à une question (en secondes)
 let questionCourante = null; // Question en cours
 
 
 // MÉTHODES DE JEU -----------------------------
+
 
 // Commencer une nouvelle série de questions
 function playJeu() {
@@ -25,18 +31,27 @@ function playJeu() {
 
 // Valider la réponse sélectionnée par le joueur
 function validReponse() {
+
+    // Ne rien faire s'il n'y a pas de question à valider
+    if (!(questionCourante instanceof Question)) {
+        return null;
+    }
+
+    $("#boutonValidation").attr('disabled', true);
+
     let reponse = questionCourante.reponse;
     let choix = $('[name="questionnaire"]:checked + label');
 
     // Vérifier si la réponse est bonne
-    if (reponse === choix.text()) {
+    if (String(reponse) === choix.text()) {
         $("#solution").append("C'est bien ça! Bravo!");
         modifyScore(1);
     } else {
-        $("#solution").append("Désolé! La bonne réponse était: " + reponse);
+        $("#solution").append("Désolé! La bonne réponse était " + reponse + "!");
     }
 
-    loadProchaineQuestion();
+    stopTimer();
+    setTimeout(loadProchaineQuestion, tempsPause*1000);
 }
 
 // Générer une nouvelle question et mettre à jour le HTML en conséquence.
@@ -50,6 +65,7 @@ function loadProchaineQuestion() {
 
     console.log(questionCourante); // TODO: Remove
 
+    // Mettre à jour le HTML pour inclure toutes les informations nécessaires pour pouvoir répondre à la question
     $("#question").empty().append(questionCourante.question);
     $("#solution").empty();
 
@@ -60,22 +76,44 @@ function loadProchaineQuestion() {
         questionnaire.append("<input type=\"radio\" name=\"questionnaire\" id=\"" + reponseID + "\"><label for=\""
             + reponseID + "\">" + questionCourante.choixReponse[i] + "</label>");
     }
+
+    $("#boutonValidation").attr('disabled', false);
+
+    stopTimer();
+    startTimer(tempsMax);
 }
 
 // Modifier le score en y ajoutant la valeur int
 function modifyScore(int) {
     score = score + int;
-    $("#score").empty().append(score);
+    $("#score").empty().append(score + "/" + nbQuestions);
 }
 
 // Remettre le score à 0
 function resetScore() {
     score = 0;
-    $("#score").empty().append(score);
+    $("#score").empty().append(score + "/" + nbQuestions);
 }
 
-function startTimer() {
+// Commencer le timer à partir de la valeur time (en secondes)
+function startTimer(time) {
+    $("#timer").empty().append(time);
 
+    timer = setInterval(function() {
+        time--;
+        $("#timer").empty().append(time);
+
+        if(time === 0) {
+            $("#solution").append("Vous avez manquer de temps! La bonne réponse était " + questionCourante.reponse + "!");
+            stopTimer();
+            setTimeout(loadProchaineQuestion, tempsPause*1000);
+        }
+    }, 1000);
+}
+
+// Arrêter le timer
+function stopTimer() {
+    clearInterval(timer);
 }
 
 
@@ -100,7 +138,7 @@ function genQuestionNbAlterations() {
     let maxNbAlterations = cycleDesQuintes[0].nbAlterations();
     let choixReponse = [reponse];
 
-    while (choixReponse.length < maxChoixReponse) {
+    while (choixReponse.length < nbReponses) {
         let random = getRandomInt(maxNbAlterations+1);
 
         if(choixReponse.indexOf(random) === -1) {
@@ -137,7 +175,7 @@ function genQuestionTonalite() {
     // Générer les choix de réponses
     let choixReponse = [reponse];
 
-    while (choixReponse.length < maxChoixReponse) {
+    while (choixReponse.length < nbReponses) {
         let random = getRandomInt(cycleDesQuintes.length);
         let randomReponse = cycleDesQuintes[random].getRandomMode().split(" ")[0];
 
