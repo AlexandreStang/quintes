@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-
+cycleDesQuintes = getCycleDesQuintes();
 
 });
 
@@ -8,47 +8,71 @@ document.addEventListener('DOMContentLoaded', function () {
 // VARIABLES GLOBALES -----------------------------
 
 
-let timer = 0;
-let score = 0;
-let maxChoixReponse = 4;
+let cycleDesQuintes = null;
+let timer = 0; // Valeur du timer en seconde
+let score = 0; // Score du joueur
+const maxChoixReponse = 4; // Nombre de choix de réponse donné à chaque question
+let questionCourante = null; // Question en cours
 
 
 // MÉTHODES DE JEU -----------------------------
 
-
+// Commencer une nouvelle série de questions
 function playJeu() {
-    const cycleDesQuintes = getCycleDesQuintes();
-    score = 0;
-
-    let index = Math.floor(Math.random() * (cycleDesQuintes.length));
-    console.log(index);
-
-    let question = genQuestionNbAlterations(cycleDesQuintes, index);
-    console.log(question);
-    let question2 = genQuestionTonalite(cycleDesQuintes, index);
-    console.log(question2);
-
-    $("#jeuContenu").empty().append("<h1>" + question.question + "</h1>");
-
+    resetScore();
+    loadProchaineQuestion();
 }
 
+// Valider la réponse sélectionnée par le joueur
+function validReponse() {
+    let reponse = questionCourante.reponse;
+    let choix = $('[name="questionnaire"]:checked + label');
 
-function validerReponse() {
-    let reponse = "reponse2";
-    let choix = $('[name="questionnaire"]');
+    // Vérifier si la réponse est bonne
+    if (reponse === choix.text()) {
+        $("#solution").append("C'est bien ça! Bravo!");
+        modifyScore(1);
+    } else {
+        $("#solution").append("Désolé! La bonne réponse était: " + reponse);
+    }
 
-    for (let i = 0; i < choix.length; i++) {
-        if (choix[i].checked) {
-            console.log(choix[i]);
-            if (choix[i].id === reponse) {
-                console.log("You win!!");
-                score++;
-                $("#score").empty().append(score);
-            }
-        }
+    loadProchaineQuestion();
+}
+
+// Générer une nouvelle question et mettre à jour le HTML en conséquence.
+function loadProchaineQuestion() {
+    // Générer une nouvelle question. Recommencer si la question reçue n'est pas valide.
+    let question = null;
+    while (question === null) {
+        question = genRandomQuestion();
+    }
+    questionCourante = question;
+
+    console.log(questionCourante); // TODO: Remove
+
+    $("#question").empty().append(questionCourante.question);
+    $("#solution").empty();
+
+    let questionnaire = $("#questionnaire");
+    questionnaire.empty();
+    for (let i = 0; i < questionCourante.choixReponse.length; i++) {
+        let reponseID = "reponse" + i;
+        questionnaire.append("<input type=\"radio\" name=\"questionnaire\" id=\"" + reponseID + "\"><label for=\""
+            + reponseID + "\">" + questionCourante.choixReponse[i] + "</label>");
     }
 }
 
+// Modifier le score en y ajoutant la valeur int
+function modifyScore(int) {
+    score = score + int;
+    $("#score").empty().append(score);
+}
+
+// Remettre le score à 0
+function resetScore() {
+    score = 0;
+    $("#score").empty().append(score);
+}
 
 function startTimer() {
 
@@ -59,7 +83,8 @@ function startTimer() {
 
 
 // Générer une question qui demande à l'utilisateur le nombre de bémols/dièses associés à une gamme (à l'index donné)
-function genQuestionNbAlterations(cycleDesQuintes, index) {
+function genQuestionNbAlterations() {
+    let index = getRandomInt(cycleDesQuintes.length);
     let quinte = cycleDesQuintes[index];
 
     if (quinte.nbAlterations() === 0) {
@@ -67,7 +92,7 @@ function genQuestionNbAlterations(cycleDesQuintes, index) {
     }
 
     // Assembler la question: "Combien de (dièses/bémols) y a t-il dans la gamme de (nom de gamme)?"
-    let question = "Combien de " + getNomSymbole(quinte.alteration(), true) +
+    let question = "Combien de " + getNomAlteration(quinte.alteration(), true) +
         " y a t-il dans la gamme de " + quinte.getRandomMode() + "?";
     let reponse = quinte.nbAlterations();
 
@@ -76,26 +101,19 @@ function genQuestionNbAlterations(cycleDesQuintes, index) {
     let choixReponse = [reponse];
 
     while (choixReponse.length < maxChoixReponse) {
-        let random = Math.floor(Math.random() * maxNbAlterations+1);
-        let isValid = true;
+        let random = getRandomInt(maxNbAlterations+1);
 
-        for (let j = 0; j < choixReponse.length; j++) {
-            if (choixReponse[j] === random) {
-                isValid = false;
-                break;
-            }
-        }
-
-        if (isValid) {
+        if(choixReponse.indexOf(random) === -1) {
             choixReponse.push(random);
         }
     }
 
-    return new Question(question, reponse, choixReponse);
+    return new Question(question, reponse, shuffleTableau(choixReponse));
 }
 
 // Générer une question qui demande à l'utilisateur la tonalité associée à un nombre de bémols/dièses
-function genQuestionTonalite(cycleDesQuintes, index) {
+function genQuestionTonalite() {
+    let index = getRandomInt(cycleDesQuintes.length);
     let quinte = cycleDesQuintes[index];
     let gamme = quinte.getRandomMode().split(" ");
 
@@ -120,23 +138,27 @@ function genQuestionTonalite(cycleDesQuintes, index) {
     let choixReponse = [reponse];
 
     while (choixReponse.length < maxChoixReponse) {
-        let random = Math.floor(Math.random() * cycleDesQuintes.length);
+        let random = getRandomInt(cycleDesQuintes.length);
         let randomReponse = cycleDesQuintes[random].getRandomMode().split(" ")[0];
-        let isValid = true;
 
-        for (let j = 0; j < choixReponse.length; j++) {
-            if (choixReponse[j] === randomReponse) { // TODO: Remove obvious wrong answers
-                isValid = false;
-                break;
-            }
-        }
-
-        if (isValid) {
+        if(choixReponse.indexOf(randomReponse) === -1) {
             choixReponse.push(randomReponse);
         }
     }
 
-    return new Question(question, reponse, choixReponse);
+    return new Question(question, reponse, shuffleTableau(choixReponse));
+}
+
+// Générer une question au hasard parmi les différents types de question possibles
+function genRandomQuestion() {
+    switch(getRandomInt(2)) {
+        case 0:
+            return genQuestionNbAlterations();
+        case 1:
+            return genQuestionTonalite();
+        default:
+            return null;
+    }
 }
 
 
@@ -161,9 +183,9 @@ function getCycleDesQuintes() {
     return cycleDesQuintes;
 }
 
-// Obtenir le nom d'un symbole au singulier ou au pluriel
-function getNomSymbole(symbole, isPluriel) {
-    switch (symbole) {
+// Obtenir le nom d'une altération au singulier ou au pluriel
+function getNomAlteration(alteration, isPluriel) {
+    switch (alteration) {
         case "♭":
             if (!isPluriel) {
                 return "bémol";
@@ -179,6 +201,24 @@ function getNomSymbole(symbole, isPluriel) {
         default:
             return null;
     }
+}
+
+// Mélanger les éléments d'un tableau pour qu'ils apparaissent à des index différents
+function shuffleTableau(tableau) {
+    let shuffle = [];
+
+    while (tableau.length !== 0) {
+        let index = getRandomInt(tableau.length);
+        shuffle.push(tableau[index]);
+        tableau.splice(index, 1);
+    }
+
+    return shuffle;
+}
+
+// Obtenir un nombre au hasard entre 0 et max (exclusif)
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
 }
 
 
@@ -198,13 +238,13 @@ class Quinte {
         let nbAlterations = this.nbAlterations();
         let isPluriel = false;
 
-        if (nbAlterations === "0") {
+        if (nbAlterations === 0) {
             return "aucune alteration";
         } else if (nbAlterations > 1) {
             isPluriel = true;
         }
 
-        return nbAlterations + " " + getNomSymbole(this.alteration(), isPluriel);
+        return nbAlterations + " " + getNomAlteration(this.alteration(), isPluriel);
     }
 
     // Obtenir l'altération présente à l'intérieur de la tonalité (dièse ou bémol)
@@ -219,7 +259,7 @@ class Quinte {
 
     // Obtenir au hasard la gamme majeure ou la gamme mineure
     getRandomMode() {
-        switch(Math.floor(Math.random() * 2)) {
+        switch(getRandomInt(2)) {
             case 0:
                 return this.modeMineur;
             case 1:
