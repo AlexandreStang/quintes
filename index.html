@@ -24,12 +24,15 @@
     </div>
 </section>
 
-<!-- TABLEAU -->
+<!-- TABLEAU: CYCLE DES QUINTES -->
 <section class="text-center pt-3">
-    <div class="w-75 m-auto">
+    <div class="m-auto">
         <h2 class="mb-3">Tableau du cycle des quintes</h2>
-        <table class="table table-striped " id="tabCycleQuintes">
+        <table class="table table-striped border m-auto" id="tabCycleQuintes">
             <caption>Cycle des quintes</caption>
+            <tr id="tabBlur">
+
+            </tr>
             <tbody>
             <tr>
                 <th scope="row" id="Tonalite">Tonalité</th>
@@ -90,6 +93,7 @@
     </div>
 </section>
 
+<!-- QUESTIONNAIRE -->
 <section>
     <div class="m-auto w-75">
         <h2 class="text-center mb-4">Testez vos connaissances!</h2>
@@ -100,21 +104,21 @@
 
         <div id="jeuContenu">
             <div class="d-flex justify-content-center row" >
-                <h5 class="text-center" id="question"></h5>
+                <h5 class="text-center mb-3" id="question"></h5>
 
-                <form class="d-flex row w-25" id="questionnaire">
+                <form class="d-flex justify-content-center w-50 mb-4" id="questionnaire">
                 </form>
 
                 <div class="d-flex justify-content-center align-items-center">
-                    <button class="btn btn-success" id="boutonValidation" onclick="validReponse()">Valider</button>
+                    <button class="btn btn-success mb-2" id="boutonValidation" onclick="validReponse()">Valider</button>
                 </div>
 
                 <div class="text-center mt-2 mb-2" id="solution"></div>
 
                 <div class="d-flex justify-content-center">
-                    <div class="d-flex justify-content-between">
-                        <div id="timer"></div>
-                        <div id="score"></div>
+                    <div class="d-flex justify-content-between" id="scoreTimer">
+                        <div>Timer: <span id="timer"></span></div>
+                        <div>Score: <span id="score"></span></div>
                     </div>
                 </div>
             </div>

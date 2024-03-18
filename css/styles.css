@@ -12,4 +12,20 @@ h1, h2 {
   font-weight: 900;
 }
 
-/*# sourceMappingURL=styles.css.map */
+#tabCycleQuintes {
+  width: 60%;
+  position: relative;
+}
+
+.blur {
+  filter: blur(6px);
+  transition: all 300ms ease-in-out;
+}
+
+#questionnaire > div {
+  width: 15%;
+}
+
+#scoreTimer {
+  min-width: 200px;
+}

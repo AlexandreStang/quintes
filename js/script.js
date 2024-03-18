@@ -4,10 +4,7 @@ cycleDesQuintes = getCycleDesQuintes();
 
 // Ajuster la visibilité des éléments liés au jeu
 $("#boutonJouer").show();
-$("#boutonValidation").hide();
 $("#jeuContenu").hide();
-
-//$("#message").append("Répondez à " + nbQuestions + " questions et prouvez que vous être le maître des quintes!")
 
 });
 
@@ -20,7 +17,7 @@ let cycleDesQuintes = null;
 
 // Propriétés du questionnaire en général
 const nbReponses = 4; // Nombre de choix de réponse donné à chaque question
-const nbQuestions = 10; // Nombre de questions à poser
+const nbQuestions = 1; // Nombre de questions à poser
 const tempsPause = 3; // Temps de pause entre chaque question (en secondes)
 const tempsMax = 10; // Temps maximum pour répondre à une question (en secondes)
 
@@ -28,7 +25,7 @@ const tempsMax = 10; // Temps maximum pour répondre à une question (en seconde
 let timer = null;
 let score = 0; // Score du joueur
 let questionCourante = null; // Question en cours
-let totalQuestions = 0; // Nombre de questions générées jusqu'à présent
+let nbQuestionsGen = 0; // Nombre de questions générées jusqu'à présent
 
 
 // MÉTHODES DE JEU -----------------------------
@@ -37,33 +34,33 @@ let totalQuestions = 0; // Nombre de questions générées jusqu'à présent
 // Commencer une nouvelle série de questions.
 function startJeu() {
     // Mettre à jour la visibilité des boutons et des éléments de jeu
-    toggleBoutons();
     toggleJeu();
+    $("#tabCycleQuintes").addClass("blur");
 
     // Réinitialiser les propriétés du jeu
     $("#message").empty();
-    totalQuestions = 0;
+    nbQuestionsGen = 0;
     resetScore();
     loadProchaineQuestion();
 }
 
 // Commencer une nouvelle série de questions.
 function endJeu() {
+    // Annoncer au joueur le nombre de points reçus
     let pointTexte = "points";
-
     if (score < 2) {
         pointTexte = "point";
     }
-
     $("#message").empty().append("La partie est terminée! Vous avez obtenu un score de " + score
         + " " + pointTexte + "!");
+
+    // Mettre à jour la visibilité des boutons et des éléments de jeu
     toggleJeu();
-    toggleBoutons();
+    $("#tabCycleQuintes").removeClass("blur");
 }
 
 // Valider la réponse sélectionnée par le joueur.
 function validReponse() {
-
     // Ne rien faire s'il n'y a pas de question à valider.
     if (!(questionCourante instanceof Question)) {
         return null;
@@ -90,8 +87,8 @@ function validReponse() {
 // Générer une nouvelle question et mettre à jour le HTML en conséquence.
 function loadProchaineQuestion() {
     // Terminer la partie si le nombre de questions à générer a été dépassé.
-    totalQuestions++;
-    if (totalQuestions > nbQuestions) {
+    nbQuestionsGen++;
+    if (nbQuestionsGen > nbQuestions) {
         endJeu();
         return null;
     }
@@ -102,18 +99,17 @@ function loadProchaineQuestion() {
         question = genRandomQuestion();
     }
     questionCourante = question;
-
-    console.log(questionCourante); // TODO: Remove
+    //console.log(questionCourante);
 
     // Mettre à jour le HTML pour inclure toutes les informations nécessaires pour pouvoir répondre à la question
-    $("#question").empty().append("Question " + totalQuestions + ": " + questionCourante.question);
+    $("#question").empty().append("Question " + nbQuestionsGen + ": " + questionCourante.question);
     $("#solution").empty();
 
     let questionnaire = $("#questionnaire");
     questionnaire.empty();
     for (let i = 0; i < questionCourante.choixReponse.length; i++) {
         let reponseID = "reponse" + i;
-        questionnaire.append("<div class=\"m-auto\"><input class=\"me-2\" type=\"radio\" name=\"questionnaire\" id=\"" + reponseID + "\"><label for=\""
+        questionnaire.append("<div class=\"d-flex justify-content-center\"><input class=\"me-2\" type=\"radio\" name=\"questionnaire\" id=\"" + reponseID + "\"><label for=\""
             + reponseID + "\">" + questionCourante.choixReponse[i] + "</label></div>");
     }
 
@@ -124,14 +120,10 @@ function loadProchaineQuestion() {
     startTimer(tempsMax);
 }
 
-// Toggle la visibilité des boutons de jeu et de vérification
-function toggleBoutons() {
-    $("#boutonJouer").toggle();
-    $("#boutonValidation").toggle();
-}
 
-// Toggle la visibilité du jeu
+// Toggle la visibilité du jeu et du bouton de jeu
 function toggleJeu() {
+    $("#boutonJouer").toggle();
     $("#jeuContenu").toggle();
 }
 
