@@ -19,6 +19,7 @@ h1, h2 {
 
 .blur {
   filter: blur(6px);
+  user-select: none;
   transition: all 300ms ease-in-out;
 }
 

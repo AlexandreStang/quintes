@@ -2,9 +2,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
 cycleDesQuintes = getCycleDesQuintes();
 
-// Ajuster la visibilité des éléments liés au jeu
+// Ajuster la visibilité des éléments liés au jeu (au cas où.)
+$("#jeuSetUp").show();
 $("#boutonJouer").show();
 $("#jeuContenu").hide();
+
+// Mettre à jour les textes indiquant la personnalisation de la partie du joueur
+updateNbQuestions($("#optionNbQuestions").val());
+updateTempsQuestion($("#optionsTemps").val());
 
 });
 
@@ -17,15 +22,27 @@ let cycleDesQuintes = null;
 
 // Propriétés du questionnaire en général
 const nbReponses = 4; // Nombre de choix de réponse donné à chaque question
-const nbQuestions = 1; // Nombre de questions à poser
+let nbQuestions = 10; // Nombre de questions à poser
 const tempsPause = 3; // Temps de pause entre chaque question (en secondes)
-const tempsMax = 10; // Temps maximum pour répondre à une question (en secondes)
+let tempsMax = 10; // Temps maximum pour répondre à une question (en secondes)
 
 // Propriétés de la partie actuelle
 let timer = null;
 let score = 0; // Score du joueur
 let questionCourante = null; // Question en cours
 let nbQuestionsGen = 0; // Nombre de questions générées jusqu'à présent
+
+
+// MÉTHODES DE PERSONNALISATION -----------------------------
+
+
+function updateNbQuestions(value) {
+    $("#optionNbQuestionsVal").empty().append(value + " questions")
+}
+
+function updateTempsQuestion(value) {
+    $("#optionsTempsVal").empty().append(value + " secondes par question")
+}
 
 
 // MÉTHODES DE JEU -----------------------------
@@ -35,7 +52,10 @@ let nbQuestionsGen = 0; // Nombre de questions générées jusqu'à présent
 function startJeu() {
     // Mettre à jour la visibilité des boutons et des éléments de jeu
     toggleJeu();
-    $("#tabCycleQuintes").addClass("blur");
+
+    // Personnaliser les propriétés selon ce que le joueur a sélectionné
+    nbQuestions = parseInt($("#optionNbQuestions").val());
+    tempsMax = parseInt($("#optionsTemps").val());
 
     // Réinitialiser les propriétés du jeu
     $("#message").empty();
@@ -56,7 +76,6 @@ function endJeu() {
 
     // Mettre à jour la visibilité des boutons et des éléments de jeu
     toggleJeu();
-    $("#tabCycleQuintes").removeClass("blur");
 }
 
 // Valider la réponse sélectionnée par le joueur.
@@ -123,8 +142,9 @@ function loadProchaineQuestion() {
 
 // Toggle la visibilité du jeu et du bouton de jeu
 function toggleJeu() {
-    $("#boutonJouer").toggle();
+    $("#jeuSetUp").toggle();
     $("#jeuContenu").toggle();
+    $("#tabCycleQuintes").toggleClass("blur");
 }
 
 // Modifier le score en y ajoutant la valeur int.
