@@ -8,8 +8,8 @@ $("#boutonJouer").show();
 $("#jeuContenu").hide();
 
 // Mettre à jour les textes indiquant la personnalisation de la partie du joueur
-updateNbQuestions($("#optionNbQuestions").val());
-updateTempsQuestion($("#optionsTemps").val());
+updateNbQuestionsVal($("#optionNbQuestions").val());
+updateTempsQuestionVal($("#optionsTemps").val());
 
 });
 
@@ -36,11 +36,13 @@ let nbQuestionsGen = 0; // Nombre de questions générées jusqu'à présent
 // MÉTHODES DE PERSONNALISATION -----------------------------
 
 
-function updateNbQuestions(value) {
+// Mettre à jour le texte indiquant le nombre de questions à répondre.
+function updateNbQuestionsVal(value) {
     $("#optionNbQuestionsVal").empty().append(value + " questions")
 }
 
-function updateTempsQuestion(value) {
+// Mettre à jour le texte indiquant le temps alloué pour répondre à chaque question.
+function updateTempsQuestionVal(value) {
     $("#optionsTempsVal").empty().append(value + " secondes par question")
 }
 
@@ -138,7 +140,6 @@ function loadProchaineQuestion() {
     stopTimer();
     startTimer(tempsMax);
 }
-
 
 // Toggle la visibilité du jeu et du bouton de jeu
 function toggleJeu() {

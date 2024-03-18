@@ -102,12 +102,12 @@
             <div class="d-flex flex-column justify-content-center">
                 <div class="d-flex justify-content-center mb-4">
                     <div class="me-4">
-                        <input class="m-2" type="range" min="5" max="15" id="optionNbQuestions" onchange="updateNbQuestions(this.value)">
-                        <span id="optionNbQuestionsVal">5</span>
+                        <input class="m-2" type="range" min="5" max="15" value="10" id="optionsTemps" onchange="updateTempsQuestionVal(this.value)">
+                        <span id="optionsTempsVal">5</span>
                     </div>
                     <div class="me-4">
-                        <input class="m-2" type="range" min="5" max="15" id="optionsTemps" onchange="updateTempsQuestion(this.value)">
-                        <span id="optionsTempsVal">5</span>
+                        <input class="m-2" type="range" min="5" max="15" value="10" id="optionNbQuestions" onchange="updateNbQuestionsVal(this.value)">
+                        <span id="optionNbQuestionsVal">5</span>
                     </div>
                 </div>
                 <div class="d-flex justify-content-center">
@@ -120,6 +120,7 @@
             <div class="d-flex justify-content-center row" >
                 <h5 class="text-center mb-3" id="question"></h5>
 
+<!--                CHOIX DE RÉPONSES-->
                 <form class="d-flex justify-content-center w-50 mb-4" id="questionnaire">
                 </form>
 
