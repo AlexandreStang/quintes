@@ -130,7 +130,7 @@ function loadProchaineQuestion() {
     questionnaire.empty();
     for (let i = 0; i < questionCourante.choixReponse.length; i++) {
         let reponseID = "reponse" + i;
-        questionnaire.append("<div class=\"text-center mb-2 mb-sm-0\"><input class=\"me-2\" type=\"radio\" name=\"questionnaire\" id=\"" + reponseID + "\"><label for=\""
+        questionnaire.append("<div class=\"text-center mb-2 mb-sm-0 mw-100\"><input class=\"me-2\" type=\"radio\" name=\"questionnaire\" id=\"" + reponseID + "\"><label for=\""
             + reponseID + "\">" + questionCourante.choixReponse[i] + "</label></div>");
     }
 
