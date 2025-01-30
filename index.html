@@ -4,31 +4,42 @@
     <meta charset="UTF-8">
     <title>Cycle des Quintes - Questionnaire</title>
 
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="css/styles.css">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="img/favicon/site.webmanifest">
 </head>
 <body>
 
 <!-- INTRO -->
 <section class="pt-5">
     <div class="m-auto text-center">
-        <h1>Bienvenue dans le monde des quintes!</h1>
+        <h1 class="px-4 px-sm-5">Bienvenue dans le monde des quintes!</h1>
         <hr>
-        <div class=" d-flex justify-content-center">
-            <p class="w-50">Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ab aspernatur aut fugit libero molestiae nemo
-                odio. Accusantium aliquid distinctio doloribus eos, laudantium possimus sit? Cupiditate dignissimos et
-                exercitationem expedita harum incidunt ipsa laboriosam, natus pariatur qui? Fuga harum modi quae quia sunt
-                unde. </p>
+        <div class="d-flex justify-content-center flex-column m-auto px-4 px-sm-5 content" style="max-width: 900px">
+            <p> Le cycle des quintes est un outil fondamental en musique, permettant de comprendre les
+                relations entre les tonalités, d’identifier les altérations et de faciliter la composition et
+                l’improvisation. En suivant une progression par intervalles de quintes justes, ce cycle illustre comment
+                les différentes tonalités majeures et mineures s’organisent harmonieusement. </p>
+            <p> Maîtriser ce concept est
+                essentiel pour tout musicien souhaitant naviguer aisément entre les tonalités. Testez vos
+                connaissances avec un quiz et voyez à quel point vous maîtrisez le cycle des quintes!</p>
         </div>
     </div>
 </section>
 
 <!-- TABLEAU: CYCLE DES QUINTES -->
 <section class="text-center pt-3">
-    <div class="m-auto">
+    <div class="m-auto px-3">
         <h2 class="mb-3">Tableau du cycle des quintes</h2>
-        <table class="table table-striped border m-auto" id="tabCycleQuintes">
+        <table class="table table-striped border m-auto px-4 px-sm-5 mb-4" id="tabCycleQuintes">
             <caption>Cycle des quintes</caption>
             <tr id="tabBlur">
 
@@ -94,20 +105,22 @@
 </section>
 
 <!-- QUESTIONNAIRE -->
-<section class="mb-5">
-    <div class="m-auto w-75">
+<section class="mb-5 px-3">
+    <div class="m-auto content">
         <h2 class="text-center mb-4">Testez vos connaissances!</h2>
         <p class="text-center" id="message"></p>
         <div id="jeuSetUp">
-            <div class="d-flex flex-column justify-content-center">
-                <div class="d-flex justify-content-center mb-4">
-                    <div class="me-4">
-                        <input class="m-2" type="range" min="5" max="15" value="10" id="optionsTemps" onchange="updateTempsQuestionVal(this.value)">
-                        <span id="optionsTempsVal">5</span>
+            <div class="">
+                <div class="row mb-4">
+                    <div class="col-md-6 col-12 mb-2 mb-md-0 d-flex justify-content-center">
+                        <input class="m-2" type="range" min="5" max="15" value="10" id="optionsTemps"
+                               onchange="updateTempsQuestionVal(this.value)">
+                        <span id="optionsTempsVal" class="d-flex align-items-center">5</span>
                     </div>
-                    <div class="me-4">
-                        <input class="m-2" type="range" min="5" max="15" value="10" id="optionNbQuestions" onchange="updateNbQuestionsVal(this.value)">
-                        <span id="optionNbQuestionsVal">5</span>
+                    <div class="col-md-6 col-12 d-flex justify-content-center">
+                        <input class="m-2" type="range" min="5" max="15" value="10" id="optionNbQuestions"
+                               onchange="updateNbQuestionsVal(this.value)">
+                        <span id="optionNbQuestionsVal" class="d-flex align-items-center">5</span>
                     </div>
                 </div>
                 <div class="d-flex justify-content-center">
@@ -117,11 +130,14 @@
         </div>
 
         <div id="jeuContenu">
-            <div class="d-flex justify-content-center row" >
+            <div class="d-flex justify-content-center row">
                 <h5 class="text-center mb-3" id="question"></h5>
 
-<!--                CHOIX DE RÉPONSES-->
-                <form class="d-flex justify-content-center w-50 mb-4" id="questionnaire">
+                <!--                CHOIX DE RÉPONSES-->
+                <form class="mb-sm-4 mb-2 m-auto">
+                    <div class="d-flex justify-content-center align-items-center flex-sm-row flex-column"  id="questionnaire">
+
+                    </div>
                 </form>
 
                 <div class="d-flex justify-content-center align-items-center">

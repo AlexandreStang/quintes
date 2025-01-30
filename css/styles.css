@@ -17,6 +17,10 @@ h1, h2 {
   position: relative;
 }
 
+.content {
+  max-width: 500px;
+}
+
 .blur {
   filter: blur(6px);
   user-select: none;
@@ -30,3 +34,39 @@ h1, h2 {
 #scoreTimer {
   min-width: 200px;
 }
+
+@media screen and (max-width: 1200px) {
+  tbody {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  tr {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #tabCycleQuintes {
+    width: 70%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  #tabCycleQuintes {
+    width: 85%;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  #tabCycleQuintes {
+    width: 100%;
+  }
+
+  td, th {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+  }
+}
+
