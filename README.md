@@ -13,9 +13,8 @@ French. [Click here to visit the site!](https://alexandrestang.github.io/2024_qu
 
 ## ⚡ Technologies Used
 
-- HTML, CSS & Javascript
-- Bootstrap
-- jQuery
+- **Frontend:** Javascript, CSS, HTML
+- **Frameworks & Libraries:** jQuery, Bootstrap
 
 ## 📩 Contact
 
