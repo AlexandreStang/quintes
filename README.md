@@ -1,4 +1,4 @@
-# Quiz about the Circle of Fifths
+#  Circle of Fifths Quiz
 
 > An interactive website designed to help users learn and test their knowledge of the Circle of Fifths. The site
 > features a multiple-choice quiz where questions are randomly generated from a few question types,
