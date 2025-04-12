@@ -9,7 +9,7 @@
 ## 🚀 Live Demo
 
 This website is currently hosted on Github and is only available in
-French. [Click here to visit the site!](https://alexandrestang.github.io/2024_quintes/)
+French. [Click here to visit the site!](https://alexandrestang.github.io/quintes/)
 
 ## ⚡ Technologies Used
 
